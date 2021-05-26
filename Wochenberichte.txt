@@ -1,0 +1,10 @@
+
+
+Woche 19.05 - 26.05
+- Repository erstellt
+- Readme erstellt
+- API lokal funktionsfähig
+- Android App Login, Rigister & Main Activity
+
+
+Woche 26.05 - 02.05
