@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Shareboard</string>
+    <string name="password">Password</string>
+    <string name="register">Register</string>
+
+
+    <string name="username_login">Username or Email</string>
+    <string name="login_checkbox">Remember me</string>
+    <string name="login">Login</string>
+    <string name="login_error_message">Wrong Username or Password!</string>
+
+    <string name="username_register">Username</string>
+    <string name="register_checkbox">Agree to shady things</string>
+    <string name="email">E-Mail</string>
+    <string name="conf_password">Confirm Password</string>
+    <string name="cancel">Cancel</string>
+    <string name="fab">FloatingActionButton: Add</string>
+    <string name="add">Add</string>
+    <string name="register_error_message">Wrong Username or Email or wrong Password!</string>
+
+</resources>
