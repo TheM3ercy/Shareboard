@@ -1,0 +1,13 @@
+Arbeitspaket 1 Tasks
+Main Activity Login Register   ~3h
+API lokal                      ~4h
+Arbeistspaket 2
+API public & verbesserungen    ~1h
+Basic Windows App              ~3h
+Android API zugriff            ~3h
+Arbeitspaket 3
+Erweiterung Windows app        ~4h
+Verbesserungen API             ~1h
+API Benutzerdaten              ~7h
+Arbeitspaket 4+
+Verbesserungen Windows App     ~3h
