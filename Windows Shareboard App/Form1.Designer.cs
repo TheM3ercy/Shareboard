@@ -30,7 +30,12 @@ namespace Windows_Shareboard_App
 		private void InitializeComponent()
 		{
 			this.label1 = new System.Windows.Forms.Label();
-			this.listView1 = new System.Windows.Forms.ListView();
+			this.clipview = new System.Windows.Forms.ListView();
+			this.Text = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.Time = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.exitbtn = new System.Windows.Forms.Button();
+			this.clearbtn = new System.Windows.Forms.Button();
+			this.add = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -44,25 +49,71 @@ namespace Windows_Shareboard_App
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Shareboard";
 			// 
-			// listView1
+			// clipview
 			// 
-			this.listView1.HideSelection = false;
-			this.listView1.Location = new System.Drawing.Point(340, 12);
-			this.listView1.Name = "listView1";
-			this.listView1.Size = new System.Drawing.Size(448, 426);
-			this.listView1.TabIndex = 1;
-			this.listView1.UseCompatibleStateImageBehavior = false;
-			this.listView1.View = System.Windows.Forms.View.Details;
+			this.clipview.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.Text,
+            this.Time});
+			this.clipview.FullRowSelect = true;
+			this.clipview.HideSelection = false;
+			this.clipview.Location = new System.Drawing.Point(340, 12);
+			this.clipview.Name = "clipview";
+			this.clipview.Size = new System.Drawing.Size(448, 426);
+			this.clipview.TabIndex = 1;
+			this.clipview.UseCompatibleStateImageBehavior = false;
+			this.clipview.View = System.Windows.Forms.View.Details;
+			this.clipview.ItemActivate += new System.EventHandler(this.clipview_ItemActivate); 
+			// 
+			// Text
+			// 
+			this.Text.Text = "Clipboard Item";
+			this.Text.Width = 350;
+			// 
+			// Time
+			// 
+			this.Time.Text = "Time";
+			this.Time.Width = 100;
+			// 
+			// exitbtn
+			// 
+			this.exitbtn.Location = new System.Drawing.Point(19, 414);
+			this.exitbtn.Name = "exitbtn";
+			this.exitbtn.Size = new System.Drawing.Size(75, 23);
+			this.exitbtn.TabIndex = 2;
+			this.exitbtn.Text = "Exit";
+			this.exitbtn.UseVisualStyleBackColor = true;
+			this.exitbtn.Click += new System.EventHandler(this.exitbtn_Click);
+			// 
+			// clearbtn
+			// 
+			this.clearbtn.Location = new System.Drawing.Point(259, 414);
+			this.clearbtn.Name = "clearbtn";
+			this.clearbtn.Size = new System.Drawing.Size(75, 23);
+			this.clearbtn.TabIndex = 3;
+			this.clearbtn.Text = "Clear";
+			this.clearbtn.UseVisualStyleBackColor = true;
+			// 
+			// add
+			// 
+			this.add.Location = new System.Drawing.Point(259, 385);
+			this.add.Name = "add";
+			this.add.Size = new System.Drawing.Size(75, 23);
+			this.add.TabIndex = 4;
+			this.add.Text = "Insert";
+			this.add.UseVisualStyleBackColor = true;
+			this.add.Click += new System.EventHandler(this.add_Click);
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(800, 450);
-			this.Controls.Add(this.listView1);
+			this.Controls.Add(this.add);
+			this.Controls.Add(this.clearbtn);
+			this.Controls.Add(this.exitbtn);
+			this.Controls.Add(this.clipview);
 			this.Controls.Add(this.label1);
 			this.Name = "Form1";
-			this.Text = "Form1";
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -71,7 +122,12 @@ namespace Windows_Shareboard_App
 		#endregion
 
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.ListView listView1;
+		private System.Windows.Forms.ListView clipview;
+		private System.Windows.Forms.ColumnHeader Text;
+		private System.Windows.Forms.ColumnHeader Time;
+		private System.Windows.Forms.Button exitbtn;
+		private System.Windows.Forms.Button clearbtn;
+		private System.Windows.Forms.Button add;
 	}
 }
 
