@@ -7,7 +7,7 @@ Woche 19.05 - 26.05
 - Android App Login, Rigister & Main Activity
 
 
-Woche 26.05 - 02.05
+Woche 26.05 - 02.06
 - Basic Windows App erstellt
 - API public funktionsfähig
 - Android App Grundsätzliche API Kommunikation
