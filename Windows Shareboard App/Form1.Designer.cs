@@ -62,7 +62,7 @@ namespace Windows_Shareboard_App
 			this.clipview.TabIndex = 1;
 			this.clipview.UseCompatibleStateImageBehavior = false;
 			this.clipview.View = System.Windows.Forms.View.Details;
-			this.clipview.ItemActivate += new System.EventHandler(this.clipview_ItemActivate); 
+			this.clipview.ItemActivate += new System.EventHandler(this.clipview_ItemActivate);
 			// 
 			// Text
 			// 
@@ -92,6 +92,7 @@ namespace Windows_Shareboard_App
 			this.clearbtn.TabIndex = 3;
 			this.clearbtn.Text = "Clear";
 			this.clearbtn.UseVisualStyleBackColor = true;
+			this.clearbtn.Click += new System.EventHandler(this.clearbtn_Click);
 			// 
 			// add
 			// 
