@@ -36,6 +36,7 @@ namespace Windows_Shareboard_App
 
 		private void clipview_ItemActivate(object sender, EventArgs e)
 		{
+			if(!clipview.SelectedItems[0].Text.Equals(""))
 			Clipboard.SetText(clipview.SelectedItems[0].Text);
 		}
 
