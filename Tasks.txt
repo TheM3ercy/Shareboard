@@ -6,7 +6,7 @@ API public & verbesserungen    1h
 Basic Windows App              3h
 Android API zugriff            3h
 Arbeitspaket 3
-Erweiterung Windows app        ~4h
+Erweiterung Windows app        1h (ca. 2 Weitere gebraucht)
 Verbesserungen API             ~1h
 API Benutzerdaten              ~7h
 Arbeitspaket 4+
