@@ -11,3 +11,7 @@ Woche 26.05 - 02.06
 - Basic Windows App erstellt
 - API public funktionsfähig
 - Android App Grundsätzliche API Kommunikation
+
+
+Woche 02.06 - 09.06
+ - Erste schritte Windows App API Kommunikation
