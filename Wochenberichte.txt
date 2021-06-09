@@ -15,3 +15,4 @@ Woche 26.05 - 02.06
 
 Woche 02.06 - 09.06
  - Erste schritte Windows App API Kommunikation
+ - API für Registrierung und Anmeldung fertiggestellt
