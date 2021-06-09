@@ -26,6 +26,7 @@ import java.net.URL;
 public class RegisterActivity extends AppCompatActivity {
 
     private final String TAG = RegisterActivity.class.getSimpleName();
+    private TextView viewErrorMessage = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,30 +63,37 @@ public class RegisterActivity extends AppCompatActivity {
         EditText password = findViewById(R.id.regEditPassword);
         EditText passwordConf = findViewById(R.id.regEditPassword2);
         EditText email = findViewById(R.id.regEditEmail);
-        TextView viewErrMsg = findViewById(R.id.regViewErrMsg);
+        viewErrorMessage = findViewById(R.id.regViewErrMsg);
 
         String errorMessage = getResources().getString(R.string.register_error_message);
-        if (username.getText().toString().equals("") || username.getText().toString().contains("[^\\w]"))
-            viewErrMsg.setText(errorMessage);
-        else if (password.getText().toString().equals("") || passwordConf.getText().toString().equals("") ||
-                password.getText().toString().contains("[^\\w]") || !password.getText().toString().equals(passwordConf.getText().toString()))
-            viewErrMsg.setText(errorMessage);
-        else if (email.getText().toString().equals("") || !email.getText().toString().contains("@"))
-            viewErrMsg.setText(errorMessage);
+        if (username.getText().toString().equals("") || username.getText().toString().contains("[^\\w]")) {
+            viewErrorMessage.setText(errorMessage);
+            return;
+        }else if (password.getText().toString().equals("") || passwordConf.getText().toString().equals("") ||
+            password.getText().toString().contains("[^\\w]") || !password.getText().toString().equals(passwordConf.getText().toString())) {
+            viewErrorMessage.setText(errorMessage);
+            return;
+        }else if (email.getText().toString().equals("") || !email.getText().toString().contains("@")) {
+            viewErrorMessage.setText(errorMessage);
+            return;
+        }
+
+        CreateUserTask task = new CreateUserTask();
+        task.execute(username.getText().toString(), password.getText().toString(), email.getText().toString());
     }
 
 
     private class CreateUserTask extends AsyncTask<String, Integer, String> {
         private final String TAG = RegisterActivity.CreateUserTask.class.getSimpleName();
-        private final String URL = "";
 
         @Override
         protected String doInBackground(String... strings) {
             Log.d(TAG, "doInBackground: Method entered");
 
-            java.net.URL url = null;
+            String urlString = "http://145.40.46.178/create_account/?username=" + strings[0] + "&password=" + strings[1] + "&email=" + strings[2];
+            URL url = null;
             try {
-                url = new URL(URL);
+                url = new URL(urlString);
 
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
@@ -115,15 +123,13 @@ public class RegisterActivity extends AppCompatActivity {
         @Override
         public void onPostExecute(String string){
             Log.d(TAG, "onPostExecute: Method entered");
-
-            JSONArray jsonArray;
-            JSONObject jsonObject;
-            try {
-                jsonArray = new JSONArray(string);
-                jsonObject = (JSONObject) jsonArray.get(0);
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if (string == null || string.equals("")){
+                Log.d(TAG, "onPostExecute: No server response");
+                viewErrorMessage.setText("No server response!");
+                return;
             }
+
+            Log.d(TAG, "onPostExecute: New user created!:" + string);
         }
     }
 }

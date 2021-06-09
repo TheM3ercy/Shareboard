@@ -2,6 +2,8 @@
     <string name="app_name">Shareboard</string>
     <string name="password">Password</string>
     <string name="register">Register</string>
+    <string name="open_navigation_drawer">Open</string>
+    <string name="close_navigation_drawer">Close</string>
 
 
     <string name="username_login">Username or Email</string>

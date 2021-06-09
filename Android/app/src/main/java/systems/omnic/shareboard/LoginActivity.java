@@ -31,6 +31,7 @@ import javax.net.ssl.HttpsURLConnection;
 public class LoginActivity extends AppCompatActivity {
 
     private final String TAG = LoginActivity.class.getSimpleName();
+    private TextView viewErrorMessage = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,13 +66,7 @@ public class LoginActivity extends AppCompatActivity {
 
         EditText username = findViewById(R.id.loginEditUser);
         EditText password = findViewById(R.id.loginEditPw);
-        TextView viewErrMsg = findViewById(R.id.loginViewErrMsg);
-
-        if (username.getText().toString().equals("") || username.getText().toString().contains("[^\\w]") ||
-                password.getText().toString().equals("") || password.getText().toString().contains("[^\\w]")){
-            viewErrMsg.setText(getResources().getString(R.string.login_error_message));
-            return;
-        }
+        viewErrorMessage = findViewById(R.id.loginViewErrMsg);
 
         CheckLoginTask task = new CheckLoginTask();
         task.execute(username.getText().toString(), password.getText().toString());
@@ -84,15 +79,15 @@ public class LoginActivity extends AppCompatActivity {
 
     private class CheckLoginTask extends AsyncTask<String, Integer, String>{
         private final String TAG = CheckLoginTask.class.getSimpleName();
-        private final String URL = "http://omnic-systems.com/pull_request/";
 
         @Override
         protected String doInBackground(String... strings) {
             Log.d(TAG, "doInBackground: Method entered");
 
+            String urlString = "http://145.40.46.178/pull_key/?username=" + strings[0] + "&password=" + strings[1];
             URL url = null;
             try {
-                url = new URL(URL);
+                url = new URL(urlString);
 
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
@@ -122,20 +117,36 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void onPostExecute(String string){
             Log.d(TAG, "onPostExecute: Method entered");
-            if (string == null){
+            if (string == null || string.equals("")){
                 Log.d(TAG, "onPostExecute: No server response");
+                viewErrorMessage.setText("No server response!");
+                return;
+            }else if (string.contains("incorrect") && !string.contains("[")){
+                Log.d(TAG, "onPostExecute: Wrong login params:" + string);
+                viewErrorMessage.setText("Wrong username or password!");
                 return;
             }
+            Log.d(TAG, "onPostExecute: Recieved user string:" + string);
 
-            Log.d(TAG, "onPostExecute: Content sent successfully: " + string);
+            String userString = null;
             JSONArray jsonArray;
-            JSONObject jsonObject;
+            JSONObject jsonObject = null;
             try {
-                jsonArray = new JSONArray(string);
-                jsonObject = (JSONObject) jsonArray.get(0);
+                 jsonArray = new JSONArray(string);
+                 jsonObject = (JSONObject) jsonArray.get(0);
+                 userString = jsonObject.getString("user_string");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            if (userString == null || userString.equals("")){
+                Log.d(TAG, "onPostExecute: No user string returned!");
+                viewErrorMessage.setText("Login failed!");
+                return;
+            }
+
+            DataContainer.getInstance().setUserString(userString);
+            finish();
         }
     }
 }
