@@ -8,6 +8,6 @@ Android API zugriff            3h
 Arbeitspaket 3
 Erweiterung Windows app        1h (ca. 2 Weitere gebraucht)
 Verbesserungen API             1h
-API Benutzerdaten              5:30h
+API Benutzerdaten              5:30h (~4h tatsächlich)
 Arbeitspaket 4+
 Verbesserungen Windows App     ~3h
