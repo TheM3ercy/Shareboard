@@ -93,6 +93,7 @@ namespace Windows_Shareboard_App
 			this.clearbtn.TabIndex = 3;
 			this.clearbtn.Text = "Clear";
 			this.clearbtn.UseVisualStyleBackColor = true;
+			this.clearbtn.Click += new System.EventHandler(this.clearbtn_Click);
 			// 
 			// add
 			// 

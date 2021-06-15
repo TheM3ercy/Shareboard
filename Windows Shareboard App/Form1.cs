@@ -84,7 +84,13 @@ namespace Windows_Shareboard_App
 
 		private void clipview_ItemActivate(object sender, EventArgs e)
 		{
+			if(!clipview.SelectedItems[0].Text.Equals(""))
 			Clipboard.SetText(clipview.SelectedItems[0].Text);
+		}
+
+		private void clearbtn_Click(object sender, EventArgs e)
+		{
+			clipview.Items.Clear();
 		}
 
 		private void button1_Click(object sender, EventArgs e)
