@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,8 +21,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -32,12 +39,16 @@ public class LoginActivity extends AppCompatActivity {
 
     private final String TAG = LoginActivity.class.getSimpleName();
     private TextView viewErrorMessage = null;
+    private CheckBox rememberMe = null;
+    private String username = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        rememberMe = findViewById(R.id.loginRemCheckbox);
+        rememberMe.setActivated(DataContainer.getInstance().isStayLoggedIn());
         ImageView iconView = findViewById(R.id.loginIconView);
         Button register = findViewById(R.id.login_register_btn);
         register.setOnClickListener(new View.OnClickListener() {
@@ -67,9 +78,25 @@ public class LoginActivity extends AppCompatActivity {
         EditText username = findViewById(R.id.loginEditUser);
         EditText password = findViewById(R.id.loginEditPw);
         viewErrorMessage = findViewById(R.id.loginViewErrMsg);
+        DataContainer.getInstance().setStayLoggedIn(rememberMe.isChecked());
 
         CheckLoginTask task = new CheckLoginTask();
-        task.execute(username.getText().toString(), password.getText().toString());
+        this.username = username.getText().toString();
+        task.execute(this.username, password.getText().toString());
+    }
+
+    private void saveConf(boolean saveState) {
+        Log.d(TAG, "saveConf: Method entered");
+
+        File directory = new File(LoginActivity.this.getFilesDir(), "data");
+        if (!directory.exists())
+            directory.mkdir();
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(new File(directory, "conf.txt")))){
+            bw.write(saveState ? DataContainer.getInstance().getUserString():null + ";" + saveState);
+            bw.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -84,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
         protected String doInBackground(String... strings) {
             Log.d(TAG, "doInBackground: Method entered");
 
-            String urlString = "http://145.40.46.178/pull_key/?username=" + strings[0] + "&password=" + strings[1];
+            String urlString = "http://omnic-systems.com/shareboard/pull_key/?username=" + strings[0] + "&password=" + strings[1];
             URL url = null;
             try {
                 url = new URL(urlString);
@@ -118,7 +145,7 @@ public class LoginActivity extends AppCompatActivity {
         public void onPostExecute(String string){
             Log.d(TAG, "onPostExecute: Method entered");
             if (string == null || string.equals("")){
-                Log.d(TAG, "onPostExecute: No server response");
+                Log.d(TAG, "onPostExecute: " + getResources().getString(R.string.no_response));
                 viewErrorMessage.setText("No server response!");
                 return;
             }else if (string.contains("incorrect") && !string.contains("[")){
@@ -145,7 +172,9 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
+            DataContainer.getInstance().setUsername(username);
             DataContainer.getInstance().setUserString(userString);
+            saveConf(DataContainer.getInstance().isStayLoggedIn());
             finish();
         }
     }

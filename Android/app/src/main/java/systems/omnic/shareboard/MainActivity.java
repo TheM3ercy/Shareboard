@@ -3,17 +3,15 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.preference.Preference;
 import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,11 +20,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -35,10 +31,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -49,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
 
     private final String TAG = MainActivity.class.getSimpleName();
     private List<String> content = new ArrayList<>();
-    private String userString;
 
     private SharedPreferences prefs;
     private SharedPreferences.OnSharedPreferenceChangeListener preferencesChangeListener;
@@ -64,9 +59,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        userString = DataContainer.getInstance().getUserString();
+        loadConf();
 
-        if (userString == null) startLoginActivity();
+        if (DataContainer.getInstance().getUserString() == null) startLoginActivity();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -84,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (userString == null)
+                if (DataContainer.getInstance().getUserString() == null)
                     Log.d(TAG, "user string null");
                 PostContentTask task = new PostContentTask();
                 task.execute(content.get(position));
@@ -100,8 +95,54 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Button logoutButton = findViewById(R.id.main_navview_logout_btn);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onCreate: " + logoutButton.getContentDescription() + " selected");
+                File directory = new File(MainActivity.this.getFilesDir(), "data");
+                if (directory.exists()) new File(directory, "conf.txt").delete();
+                content = new ArrayList<>();
+                listView.setAdapter(new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, content));
+                startLoginActivity();
+            }
+        });
+
+        TextView viewUsername = findViewById(R.id.mainNavviewViewUser);
+        viewUsername.setText(DataContainer.getInstance().getUsername());
+
+        Button settingsButton = findViewById(R.id.main_navview_settings_btn);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onCreate: " + settingsButton.getContentDescription() + " selected");
+                Intent intent = new Intent(MainActivity.this, CustomPreferenceActivity.class);
+                startActivityForResult(intent, 123);
+            }
+        });
+
+        Button recyclebinButton = findViewById(R.id.main_navview_recbin_btn);
+        recyclebinButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onCreate: " + recyclebinButton.getContentDescription() + " selected");
+
+            }
+        });
     }
 
+    private void loadConf(){
+        Log.d(TAG, "loadConf: Method entered");
+
+        File directory = new File(MainActivity.this.getFilesDir(), "data");
+        if (!directory.exists()) return;
+        try (BufferedReader br = new BufferedReader(new FileReader(new File(directory, "conf.txt")))){
+            String[] split = br.readLine().split(";");
+            DataContainer.getInstance().setUserString(split[0].equals("null") ? null:split[0]);
+            DataContainer.getInstance().setStayLoggedIn(Boolean.parseBoolean(split[1]));
+        } catch (Exception e){
+        }
+    }
 
     public void startLoginActivity(){
         Log.d(TAG, "startLoginActivity: Method entered");
@@ -144,9 +185,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
             return true;
-        }else if (item.getItemId() == R.id.menuSettings){
-            Intent intent = new Intent(MainActivity.this, CustomPreferenceActivity.class);
-            startActivityForResult(intent, 123);
         }else if (item.getItemId() == R.id.menuLoad){
             GetContentTask task = new GetContentTask();
             task.execute();
@@ -170,7 +208,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
+    @Override
+    public void onBackPressed(){
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle(getResources().getString(R.string.exit))
+                .setMessage(getResources().getString(R.string.exit_warning))
+                .setPositiveButton("confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .setNegativeButton(getResources().getString(R.string.cancel), null)
+                .show();
+    }
 
     private class PostContentTask extends AsyncTask<String, Integer, String> {
         private final String TAG = MainActivity.PostContentTask.class.getSimpleName();
@@ -179,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(String... strings) {
             Log.d(TAG, "doInBackground: Method entered");
 
-            String urlString = "http://145.40.46.178/get_request/?user_string=" + DataContainer.getInstance().getUserString() + "&content=" + strings[0];
+            String urlString = "http://omnic-systems.com/shareboard/get_request/?user_string=" + DataContainer.getInstance().getUserString() + "&content=" + strings[0];
             URL url = null;
             try {
                 url = new URL(urlString);
@@ -212,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
         public void onPostExecute(String string){
             Log.d(TAG, "onPostExecute: Method entered");
             if (string == null){
-                Log.d(TAG, "onPostExecute: No server response");
+                Log.d(TAG, "onPostExecute: " + getResources().getString(R.string.no_response));
                 return;
             } else if (string.contains("Post recieved")){
                 Log.d(TAG, "onPostExecute: Content sent successfully: " + string);
@@ -227,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(String... strings) {
             Log.d(TAG, "doInBackground: Method entered");
 
-            String urlString = "http://145.40.46.178/pull_request/?user_string=" + DataContainer.getInstance().getUserString();
+            String urlString = "http://omnic-systems.com/shareboard/pull_request/?user_string=" + DataContainer.getInstance().getUserString();
             URL url = null;
             try {
                 url = new URL(urlString);
@@ -260,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
         public void onPostExecute(String string){
             Log.d(TAG, "onPostExecute: Method entered");
             if (string == null || string.equals("")){
-                Log.d(TAG, "onPostExecute: No server response");
+                Log.d(TAG, "onPostExecute: " + getResources().getString(R.string.no_response));
                 return;
             }
 
@@ -279,6 +330,53 @@ public class MainActivity extends AppCompatActivity {
             }
 
             loadContent(results);
+        }
+    }
+
+    private class DeleteContentTask extends AsyncTask<String, Integer, String> {
+        private final String TAG = MainActivity.DeleteContentTask.class.getSimpleName();
+
+        @Override
+        protected String doInBackground(String... strings) {
+            Log.d(TAG, "doInBackground: Method entered");
+
+            String urlString = "https://omnic-systems.com/shareboard/delete?user_string=" + DataContainer.getInstance().getUserString() + "&content=" + strings[0];
+            URL url = null;
+            try {
+                url = new URL(urlString);
+
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setRequestProperty("Accept", "application/json");
+                if (connection.getResponseCode() == HttpURLConnection.HTTP_OK){
+                    Log.d(TAG, "doInBackground: Connection ok");
+
+                    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    StringBuilder sb = new StringBuilder();
+                    String line = br.readLine();
+                    while (line != null) {
+                        sb.append(line);
+                        line = br.readLine();
+                    }
+
+                    return sb.toString();
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(String string){
+            Log.d(TAG, "onPostExecute: Method entered");
+            if (string.contains("failed")){
+                Log.d(TAG, "onPostExecute: Delete failed");
+            } else if (string.equals("") || string == null){
+                Log.d(TAG, "onPostExecute: " + getResources().getString(R.string.no_response));
+            }
         }
     }
 }

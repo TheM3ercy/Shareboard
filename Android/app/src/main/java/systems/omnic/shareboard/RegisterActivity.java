@@ -90,7 +90,7 @@ public class RegisterActivity extends AppCompatActivity {
         protected String doInBackground(String... strings) {
             Log.d(TAG, "doInBackground: Method entered");
 
-            String urlString = "http://145.40.46.178/create_account/?username=" + strings[0] + "&password=" + strings[1] + "&email=" + strings[2];
+            String urlString = "http://omnic-systems.com/shareboard/create_account/?username=" + strings[0] + "&password=" + strings[1] + "&email=" + strings[2];
             URL url = null;
             try {
                 url = new URL(urlString);
@@ -124,8 +124,8 @@ public class RegisterActivity extends AppCompatActivity {
         public void onPostExecute(String string){
             Log.d(TAG, "onPostExecute: Method entered");
             if (string == null || string.equals("")){
-                Log.d(TAG, "onPostExecute: No server response");
-                viewErrorMessage.setText("No server response!");
+                Log.d(TAG, "onPostExecute: " + getResources().getString(R.string.no_response));
+                viewErrorMessage.setText(getResources().getString(R.string.no_response));
                 return;
             }
 

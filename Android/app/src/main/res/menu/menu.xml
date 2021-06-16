@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/menuSettings"
         android:contentDescription="settings"
@@ -8,4 +9,8 @@
         android:id="@+id/menuLoad"
         android:contentDescription="load"
         android:title="load" />
+    <item
+        app:actionViewClass="android.widget.CheckBox"
+        app:showAsAction="always"
+        android:title="@string/actionbar_checkbox_title" />
 </menu>
