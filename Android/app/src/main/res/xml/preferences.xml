@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="switch_darkmode"
+        android:title="Darkmode" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="checkbox_notifications"
+        android:title="Enable notifications" />
+</PreferenceScreen>
