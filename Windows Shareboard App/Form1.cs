@@ -20,9 +20,12 @@ namespace Windows_Shareboard_App
 {
 	public partial class Form1 : Form
 	{
-		private string userkey = "?user_string=2560c90aaf8c3f8";
-		private bool running = true;
-		
+		public static string userkey = "";
+		private static bool running = true;
+		public delegate void pull_from_server();
+		public pull_from_server pull_From_Server;
+		Thread t;
+
 		public class Clipboard_Item
 		{
 			[JsonPropertyName("clipboard")]
@@ -32,14 +35,15 @@ namespace Windows_Shareboard_App
 
 		}
 
-		private void pull_from_server()
+		private void pull_from_server_Method()
 		{
+			clipview.Items.Clear();
 			const string URL = "http://omnic-systems.com/shareboard/pull_request/";
 			HttpClient client = new HttpClient();
 			client.BaseAddress = new Uri(URL);
 			client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-			HttpResponseMessage response = client.GetAsync(userkey).Result;
+			HttpResponseMessage response = client.GetAsync("?user_string=" + userkey).Result;
 			if (response.IsSuccessStatusCode)
 			{
 				var data = response.Content.ReadAsStringAsync().Result;
@@ -53,7 +57,7 @@ namespace Windows_Shareboard_App
 			}
 			else
 			{
-				Console.WriteLine("{0} ({1})", (int) response.StatusCode, response.ReasonPhrase);
+				Console.WriteLine("{0} ({1})", (int)response.StatusCode, response.ReasonPhrase);
 			}
 			client.Dispose();
 		}
@@ -63,9 +67,17 @@ namespace Windows_Shareboard_App
 		public Form1()
 		{
 			InitializeComponent();
-			
+			var f2 = new Form2();
+			f2.ShowDialog();
+			pull_From_Server = new pull_from_server(pull_from_server_Method);
+			t = new Thread(new ThreadStart(ThreadFunction));
+			t.Start();
 		}
-
+		private void ThreadFunction()
+		{
+			bg_sync myThreadClassObject = new bg_sync(this);
+			myThreadClassObject.Run();
+		}
 
 		private void exitbtn_Click(object sender, EventArgs e)
 		{
@@ -75,17 +87,24 @@ namespace Windows_Shareboard_App
 
 		private void add_Click(object sender, EventArgs e)
 		{
-			var item = new ListViewItem(Clipboard.GetText());
-			item.SubItems.Add(DateTime.UtcNow.ToString());
-			clipview.Items.Add(item);
+
+			const string URL = "http://omnic-systems.com/shareboard/get_request/";
+			HttpClient client = new HttpClient();
+			client.BaseAddress = new Uri(URL);
+			client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+			var response = client.GetAsync("?user_string=" + userkey + "&content=" + Clipboard.GetText());
+
+			pull_from_server_Method();
+
+
 		}
 
 
 
 		private void clipview_ItemActivate(object sender, EventArgs e)
 		{
-			if(!clipview.SelectedItems[0].Text.Equals(""))
-			Clipboard.SetText(clipview.SelectedItems[0].Text);
+			if (!clipview.SelectedItems[0].Text.Equals(""))
+				Clipboard.SetText(clipview.SelectedItems[0].Text);
 		}
 
 		private void clearbtn_Click(object sender, EventArgs e)
@@ -95,8 +114,28 @@ namespace Windows_Shareboard_App
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			clipview.Items.Clear();
-			pull_from_server();
+
+			pull_from_server_Method();
+
 		}
+		//URL: https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.invoke?view=net-5.0 
+		public class bg_sync
+		{
+			Form1 myFormControl1;
+			public bg_sync(Form1 myForm)
+			{
+				myFormControl1 = myForm;
+			}
+
+			public void Run()
+			{
+				while (running)
+				{
+					myFormControl1.Invoke(myFormControl1.pull_From_Server);
+					Thread.Sleep(3000);
+				}
+			}
+		}
+
 	}
 }
