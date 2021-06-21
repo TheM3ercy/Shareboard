@@ -13,3 +13,6 @@ Arbeitspaket 4+
 Windows App Kommunikation      3:15h
 API/Webseite                   2:30h
 Android Verbesserungen         4:45h
+Android usability 
+Verbesserungen und extra 
+features                      10h
