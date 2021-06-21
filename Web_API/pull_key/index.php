@@ -20,7 +20,7 @@ if ($dbconnect->connect_error) {
 
     while ($row = mysqli_fetch_array($query)) {
         if ($row['username'] == $username && $row['password'] == $password){
-            $query = mysqli_query($dbconnect, "SELECT user_string FROM users WHERE username='$username'")
+            $query = mysqli_query($dbconnect, "SELECT user_string FROM users WHERE username='$username' AND password='$password'")
             or die (mysqli_error($dbconnect));
 
             $dl = array();
