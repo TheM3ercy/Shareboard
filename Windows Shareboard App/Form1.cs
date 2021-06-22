@@ -25,19 +25,29 @@ namespace Windows_Shareboard_App
 		public delegate void pull_from_server();
 		public pull_from_server pull_From_Server;
 		Thread t;
-
+		Thread t2;
+		public delegate void set_clipboard();
+		public set_clipboard set_Clipboard;
+		private string last_clipboard;
+		private List<Clipboard_Item> clipitems;
 		public class Clipboard_Item
 		{
 			[JsonPropertyName("clipboard")]
 			public string Text { get; set; }
 			[JsonPropertyName("upload_date")]
 			public string Date { get; set; }
+			[JsonPropertyName("id")]
+			public string id { get; set; }
 
+			public override bool Equals(object obj)
+			{
+				return obj is Clipboard_Item item &&
+					   id == item.id;
+			}
 		}
-
+		
 		private void pull_from_server_Method()
 		{
-			clipview.Items.Clear();
 			const string URL = "http://omnic-systems.com/shareboard/pull_request/";
 			HttpClient client = new HttpClient();
 			client.BaseAddress = new Uri(URL);
@@ -48,11 +58,15 @@ namespace Windows_Shareboard_App
 			{
 				var data = response.Content.ReadAsStringAsync().Result;
 				var array = JsonSerializer.Deserialize<IEnumerable<Clipboard_Item>>(data);
-				foreach (var clipboardItem in array)
+				foreach (Clipboard_Item clipboardItem in array)
 				{
-					var item = new ListViewItem(clipboardItem.Text);
-					item.SubItems.Add(clipboardItem.Date);
-					clipview.Items.Add(item);
+					if (!clipitems.Contains(clipboardItem))
+					{
+						var item = new ListViewItem(clipboardItem.Text);
+						item.SubItems.Add(clipboardItem.Date);
+						clipview.Items.Add(item);
+						clipitems.Add(clipboardItem);
+					}
 				}
 			}
 			else
@@ -61,22 +75,33 @@ namespace Windows_Shareboard_App
 			}
 			client.Dispose();
 		}
-
-
-
 		public Form1()
 		{
 			InitializeComponent();
 			var f2 = new Form2();
 			f2.ShowDialog();
 			pull_From_Server = new pull_from_server(pull_from_server_Method);
-			t = new Thread(new ThreadStart(ThreadFunction));
+			t = new Thread(new ThreadStart(start_bg_sync));
 			t.Start();
+			set_Clipboard = new set_clipboard(set_clipboard_Method);
+			t2 = new Thread(new ThreadStart(start_bg_clip));
+			t2.Start();
+			clipitems = new List<Clipboard_Item>();
 		}
-		private void ThreadFunction()
+		private void start_bg_sync()
 		{
-			bg_sync myThreadClassObject = new bg_sync(this);
-			myThreadClassObject.Run();
+			bg_sync bg_thread = new bg_sync(this);
+			bg_thread.Run();
+		}
+		private void start_bg_clip()
+		{
+			bg_clip bg_Clip = new bg_clip(this);
+			bg_Clip.Run();
+		}
+		private void clip_sync()
+		{
+			clip bg = new clip(this);
+			bg.Run();
 		}
 
 		private void exitbtn_Click(object sender, EventArgs e)
@@ -99,24 +124,84 @@ namespace Windows_Shareboard_App
 
 		}
 
-
+		private void set_clipboard_Method()
+		{
+			if(clipview.SelectedItems.Count!=0)
+			if (!clipitems[clipview.SelectedIndices[0]].Text.Equals(""))
+				Clipboard.SetText(clipitems[clipview.SelectedIndices[0]].Text);
+		}
 
 		private void clipview_ItemActivate(object sender, EventArgs e)
 		{
-			if (!clipview.SelectedItems[0].Text.Equals(""))
-				Clipboard.SetText(clipview.SelectedItems[0].Text);
+			Thread thread = new Thread(new ThreadStart(clip_sync));
+			thread.Start();
 		}
 
 		private void clearbtn_Click(object sender, EventArgs e)
 		{
-			clipview.Items.Clear();
+			List<ListViewItem> tempviewitems = new List<ListViewItem>();
+			List<Clipboard_Item> tempclipitems = new List<Clipboard_Item>();
+			const string URL = "http://omnic-systems.com/shareboard/delete/";
+			HttpClient client = new HttpClient();
+			client.BaseAddress = new Uri(URL);
+			client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+			foreach (int index in clipview.SelectedIndices)
+			{
+				var item = clipitems[index];
+				HttpResponseMessage response = client.GetAsync("?id="+item.id+"&user_string="+userkey).Result;
+				if (response.IsSuccessStatusCode)
+				{
+					var data = response.Content.ReadAsStringAsync().Result;
+					tempviewitems.Add(clipview.Items[index]);
+					tempclipitems.Add(clipitems[index]);
+				}
+			}
+			foreach(ListViewItem i in tempviewitems)
+			{
+				clipview.Items.Remove(i);
+			}
+			foreach(Clipboard_Item i in tempclipitems)
+			{
+				clipitems.Remove(i);
+			}
+			
 		}
+			
 
 		private void button1_Click(object sender, EventArgs e)
 		{
 
 			pull_from_server_Method();
 
+		}
+		public class bg_clip
+		{
+			Form1 control;
+			public bg_clip(Form1 form)
+			{
+				control = form;
+			}
+			public void Run()
+			{
+				while (running)
+				{
+					control.Invoke(control.set_Clipboard);
+					Thread.Sleep(250);
+				}
+
+			}
+		}
+		public class clip
+		{
+			Form1 control;
+			public clip(Form1 form)
+			{
+				control = form;
+			}
+			public void Run()
+			{
+					control.Invoke(control.set_Clipboard);
+			}
 		}
 		//URL: https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.control.invoke?view=net-5.0 
 		public class bg_sync
@@ -129,6 +214,7 @@ namespace Windows_Shareboard_App
 
 			public void Run()
 			{
+				Thread.Sleep(100);
 				while (running)
 				{
 					myFormControl1.Invoke(myFormControl1.pull_From_Server);

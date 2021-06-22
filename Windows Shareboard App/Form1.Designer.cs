@@ -30,7 +30,7 @@ namespace Windows_Shareboard_App
 		private void InitializeComponent()
 		{
 			this.label1 = new System.Windows.Forms.Label();
-			clipview = new System.Windows.Forms.ListView();
+			this.clipview = new System.Windows.Forms.ListView();
 			this.Text = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Time = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.exitbtn = new System.Windows.Forms.Button();
@@ -52,18 +52,18 @@ namespace Windows_Shareboard_App
 			// 
 			// clipview
 			// 
-			clipview.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.clipview.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Text,
             this.Time});
-			clipview.FullRowSelect = true;
-			clipview.HideSelection = false;
-			clipview.Location = new System.Drawing.Point(340, 12);
-			clipview.Name = "clipview";
-			clipview.Size = new System.Drawing.Size(448, 426);
-			clipview.TabIndex = 1;
-			clipview.UseCompatibleStateImageBehavior = false;
-			clipview.View = System.Windows.Forms.View.Details;
-			clipview.ItemActivate += new System.EventHandler(this.clipview_ItemActivate);
+			this.clipview.FullRowSelect = true;
+			this.clipview.HideSelection = false;
+			this.clipview.Location = new System.Drawing.Point(340, 12);
+			this.clipview.Name = "clipview";
+			this.clipview.Size = new System.Drawing.Size(448, 426);
+			this.clipview.TabIndex = 1;
+			this.clipview.UseCompatibleStateImageBehavior = false;
+			this.clipview.View = System.Windows.Forms.View.Details;
+			this.clipview.ItemActivate += new System.EventHandler(this.clipview_ItemActivate);
 			// 
 			// Text
 			// 
@@ -91,7 +91,7 @@ namespace Windows_Shareboard_App
 			this.clearbtn.Name = "clearbtn";
 			this.clearbtn.Size = new System.Drawing.Size(75, 23);
 			this.clearbtn.TabIndex = 3;
-			this.clearbtn.Text = "Clear";
+			this.clearbtn.Text = "Delete";
 			this.clearbtn.UseVisualStyleBackColor = true;
 			this.clearbtn.Click += new System.EventHandler(this.clearbtn_Click);
 			// 
@@ -124,7 +124,7 @@ namespace Windows_Shareboard_App
 			this.Controls.Add(this.add);
 			this.Controls.Add(this.clearbtn);
 			this.Controls.Add(this.exitbtn);
-			this.Controls.Add(clipview);
+			this.Controls.Add(this.clipview);
 			this.Controls.Add(this.label1);
 			this.Name = "Form1";
 			this.ResumeLayout(false);
@@ -135,13 +135,13 @@ namespace Windows_Shareboard_App
 		#endregion
 
 		private System.Windows.Forms.Label label1;
-		private static System.Windows.Forms.ListView clipview;
 		private System.Windows.Forms.ColumnHeader Text;
 		private System.Windows.Forms.ColumnHeader Time;
 		private System.Windows.Forms.Button exitbtn;
 		private System.Windows.Forms.Button clearbtn;
 		private System.Windows.Forms.Button add;
 		private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.ListView clipview;
 	}
 }
 

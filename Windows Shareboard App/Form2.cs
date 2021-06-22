@@ -52,12 +52,14 @@ namespace Windows_Shareboard_App
 					}
 					else
 					{
-						var array = JsonSerializer.Deserialize<IEnumerable<userkey>>(data);
 
-						foreach (var user in array)
-						{
-							Form1.userkey = user.user_string;
-						}
+							var array = JsonSerializer.Deserialize<IEnumerable<userkey>>(data);
+
+
+							foreach (var user in array)
+							{
+								Form1.userkey = user.user_string;
+							}
 						this.DialogResult = DialogResult.OK;
 					}
 				}
