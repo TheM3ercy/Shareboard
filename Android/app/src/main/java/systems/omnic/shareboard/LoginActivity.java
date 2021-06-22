@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -41,11 +42,13 @@ public class LoginActivity extends AppCompatActivity {
     private TextView viewErrorMessage = null;
     private CheckBox rememberMe = null;
     private String username = "";
+    private MainActivity context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        context = (MainActivity) getIntent().getExtras().getSerializable("context");
 
         rememberMe = findViewById(R.id.loginRemCheckbox);
         rememberMe.setActivated(DataContainer.getInstance().isStayLoggedIn());
@@ -85,19 +88,7 @@ public class LoginActivity extends AppCompatActivity {
         task.execute(this.username, password.getText().toString());
     }
 
-    private void saveConf(boolean saveState) {
-        Log.d(TAG, "saveConf: Method entered");
 
-        File directory = new File(LoginActivity.this.getFilesDir(), "data");
-        if (!directory.exists())
-            directory.mkdir();
-        try(BufferedWriter bw = new BufferedWriter(new FileWriter(new File(directory, "conf.txt")))){
-            bw.write(saveState ? DataContainer.getInstance().getUserString():null + ";" + saveState);
-            bw.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void onBackPressed(){
@@ -174,7 +165,8 @@ public class LoginActivity extends AppCompatActivity {
 
             DataContainer.getInstance().setUsername(username);
             DataContainer.getInstance().setUserString(userString);
-            saveConf(DataContainer.getInstance().isStayLoggedIn());
+            DataContainer.getInstance().saveConf(LoginActivity.this);
+            context.init();
             finish();
         }
     }

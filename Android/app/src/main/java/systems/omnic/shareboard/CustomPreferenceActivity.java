@@ -2,6 +2,7 @@ package systems.omnic.shareboard;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,5 +19,11 @@ public class CustomPreferenceActivity extends AppCompatActivity {
         .commit();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        finish();
+        return true;
     }
 }
