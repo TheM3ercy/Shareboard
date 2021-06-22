@@ -80,7 +80,7 @@ namespace Windows_Shareboard_App
 		public Form1()
 		{
 			InitializeComponent();
-			var f2 = new Form2();
+			var f2 = new Login();
 			f2.ShowDialog();
 			pull_From_Server = new pull_from_server(pull_from_server_Method);
 			t = new Thread(new ThreadStart(start_bg_sync));
@@ -145,7 +145,7 @@ namespace Windows_Shareboard_App
 					{
 						Clipboard.SetText(clipitems[clipview.SelectedIndices[0]].Text);
 					}
-					catch (Exception e) { 
+					catch (Exception) { 
 					}
 				}
 				

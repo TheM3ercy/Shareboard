@@ -1,7 +1,7 @@
 ﻿
 namespace Windows_Shareboard_App
 {
-	partial class Form2
+	partial class Login
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -29,6 +29,7 @@ namespace Windows_Shareboard_App
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Login));
 			this.button1 = new System.Windows.Forms.Button();
 			this.button2 = new System.Windows.Forms.Button();
 			this.textBox1 = new System.Windows.Forms.TextBox();
@@ -113,7 +114,7 @@ namespace Windows_Shareboard_App
 			this.label4.Text = "Username or Password incorrect!";
 			this.label4.Visible = false;
 			// 
-			// Form2
+			// Login
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -126,8 +127,10 @@ namespace Windows_Shareboard_App
 			this.Controls.Add(this.textBox1);
 			this.Controls.Add(this.button2);
 			this.Controls.Add(this.button1);
-			this.Name = "Form2";
-			this.Text = "Form2";
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Name = "Login";
+			this.Text = "Login";
+			this.Load += new System.EventHandler(this.Form2_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

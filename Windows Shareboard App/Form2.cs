@@ -13,14 +13,14 @@ using System.Windows.Forms;
 
 namespace Windows_Shareboard_App
 {
-	public partial class Form2 : Form
+	public partial class Login : Form
 	{
 		class userkey{
 			
 			public string user_string { get;set; }
 		}
 
-		public Form2()
+		public Login()
 		{
 			InitializeComponent();
 			textBox1.Select();
@@ -81,6 +81,11 @@ namespace Windows_Shareboard_App
 			if (e.KeyValue == (char)Keys.Enter)
 				button2_Click(sender, e);
 
+
+		}
+
+		private void Form2_Load(object sender, EventArgs e)
+		{
 
 		}
 	}
