@@ -28,7 +28,7 @@ namespace Windows_Shareboard_App
 		Thread t2;
 		public delegate void set_clipboard();
 		public set_clipboard set_Clipboard;
-		private string last_clipboard;
+		private string last_clipboard ="";
 		private List<Clipboard_Item> clipitems;
 		public class Clipboard_Item
 		{
@@ -48,6 +48,8 @@ namespace Windows_Shareboard_App
 		
 		private void pull_from_server_Method()
 		{
+			
+
 			const string URL = "http://omnic-systems.com/shareboard/pull_request/";
 			HttpClient client = new HttpClient();
 			client.BaseAddress = new Uri(URL);
@@ -88,6 +90,7 @@ namespace Windows_Shareboard_App
 			t2.Start();
 			clipitems = new List<Clipboard_Item>();
 		}
+		#region Threads
 		private void start_bg_sync()
 		{
 			bg_sync bg_thread = new bg_sync(this);
@@ -103,7 +106,7 @@ namespace Windows_Shareboard_App
 			clip bg = new clip(this);
 			bg.Run();
 		}
-
+		#endregion
 		private void exitbtn_Click(object sender, EventArgs e)
 		{
 			running = false;
@@ -118,7 +121,7 @@ namespace Windows_Shareboard_App
 			client.BaseAddress = new Uri(URL);
 			client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 			var response = client.GetAsync("?user_string=" + userkey + "&content=" + Clipboard.GetText());
-
+			last_clipboard = Clipboard.GetText();
 			pull_from_server_Method();
 
 
@@ -126,9 +129,26 @@ namespace Windows_Shareboard_App
 
 		private void set_clipboard_Method()
 		{
+			if (!last_clipboard.Equals(Clipboard.GetText())){
+				const string URL = "http://omnic-systems.com/shareboard/get_request/";
+				HttpClient client = new HttpClient();
+				client.BaseAddress = new Uri(URL);
+				client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+				var response = client.GetAsync("?user_string=" + userkey + "&content=" + Clipboard.GetText());
+				last_clipboard = Clipboard.GetText();
+				pull_from_server_Method();
+
+			}
 			if(clipview.SelectedItems.Count!=0)
-			if (!clipitems[clipview.SelectedIndices[0]].Text.Equals(""))
-				Clipboard.SetText(clipitems[clipview.SelectedIndices[0]].Text);
+			if (!clipitems[clipview.SelectedIndices[0]].Text.Equals("")) {
+					try
+					{
+						Clipboard.SetText(clipitems[clipview.SelectedIndices[0]].Text);
+					}
+					catch (Exception e) { 
+					}
+				}
+				
 		}
 
 		private void clipview_ItemActivate(object sender, EventArgs e)
@@ -164,7 +184,7 @@ namespace Windows_Shareboard_App
 			{
 				clipitems.Remove(i);
 			}
-			
+			client.Dispose();
 		}
 			
 
@@ -174,6 +194,7 @@ namespace Windows_Shareboard_App
 			pull_from_server_Method();
 
 		}
+		#region ThreadInvokes
 		public class bg_clip
 		{
 			Form1 control;
@@ -191,6 +212,7 @@ namespace Windows_Shareboard_App
 
 			}
 		}
+
 		public class clip
 		{
 			Form1 control;
@@ -222,6 +244,7 @@ namespace Windows_Shareboard_App
 				}
 			}
 		}
+		#endregion
 
 	}
 }
