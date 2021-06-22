@@ -1,6 +1,6 @@
 <?php
 $hostname = "localhost:3306/media/pi/Volume/mysqlDatabase/mysql.sock";
-$username = "tester";
+$username = "shareboard";
 $password = "Mo160703";
 $db = "shareboard";
 

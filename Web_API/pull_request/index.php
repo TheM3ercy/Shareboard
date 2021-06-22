@@ -1,6 +1,6 @@
 <?php
 $hostname = "localhost:3306/media/pi/Volume/mysqlDatabase/mysql.sock";
-$username = "tester";
+$username = "shareboard";
 $password = "Mo160703";
 $db = "shareboard";
 
@@ -13,15 +13,14 @@ if ($dbconnect->connect_error) {
 }
 
 $user_string = $_GET['user_string'];
-$pc = $_GET['pc'];
 
-$query = mysqli_query($dbconnect, "SELECT clipboard_content, upload_date FROM clipboard WHERE user_string='$user_string'")
+$query = mysqli_query($dbconnect, "SELECT clipboard_id, clipboard_content, upload_date FROM clipboard WHERE user_string='$user_string'")
 or die (mysqli_error($dbconnect));
 
 $dl = array();
 
 while ($row = mysqli_fetch_array($query)) {
-    array_push($dl, array('clipboard' => $row['clipboard_content'], 'upload_date' => $row['upload_date']));
+    array_push($dl, array('id' => $row['clipboard_id'], 'clipboard' => $row['clipboard_content'], 'upload_date' => $row['upload_date']));
 }
 $json = json_encode($dl);
 echo $json;

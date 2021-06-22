@@ -47,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             $_SESSION["username"] = $username;
                             $_SESSION["user_string"] = $user_string;
 
-                            header("Location: https://www.omnic-systems.com/shareboard/mypage?user_string=" . $user_string);
+                            header("Location: https://www.omnic-systems.com/shareboard/mypage");
                         } else {
                             $password_err = "Invalid username or password.";
                         }
@@ -56,7 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $password_err = "Invalid username or password.";
                 }
             } else {
-                echo "Oops! Something went wrong. Please try again later.";
+                echo "Something went wrong. Please try again later.";
             }
 
             mysqli_stmt_close($stmt);
@@ -72,7 +72,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Login | Shareboard</title>
-    <link rel="stylesheet" href="../css/style.css?v=1.12312312312312312313123123131321321">
+    <link rel="stylesheet" href="../css/auth.css">
 </head>
 <body>
 <div class="hd"></div>

@@ -1,6 +1,6 @@
 <?php
 define('DB_SERVER', 'localhost:3306/media/pi/Volume/mysqlDatabase/mysql.sock');
-define('DB_USERNAME', 'tester');
+define('DB_USERNAME', 'shareboard');
 define('DB_PASSWORD', 'Mo160703');
 define('DB_NAME', 'shareboard');
 

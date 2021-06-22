@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $username = trim($_POST["username"]);
                 }
             } else {
-                echo "Oops! Something went wrong. Please try again later.";
+                echo "Something went wrong. Please try again later.";
             }
 
             mysqli_stmt_close($stmt);
@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (empty(trim($_POST["email"]))) {
         $email_err = "Please enter a email.";
-    } elseif (!preg_match("/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/", trim($_POST["email"]))) {
+    } elseif (!filter_var(trim($_POST["email"]), FILTER_VALIDATE_EMAIL)) {
         $email_err = "Please enter an email address.";
     } else {
         $email = trim($_POST["email"]);
@@ -66,7 +66,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $sql = "INSERT INTO users (username, password, email, user_string) VALUES (?, ?, ?, ?)";
 
         if ($stmt = mysqli_prepare($link, $sql)) {
-            // Bind variables to the prepared statement as parameters
             mysqli_stmt_bind_param($stmt, "ssss", $param_username, $param_password, $param_email, $param_user_string);
 
             // Set parameters
@@ -75,9 +74,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $param_password = $password;
             $param_user_string = uniqid(25);
             if (mysqli_stmt_execute($stmt)) {
-                header("location: login.php");
+                if($stmt = mysqli_prepare($link,"SELECT id FROM users WHERE user_string='$param_user_string'")) {
+                    mysqli_stmt_bind_param($stmt, "s", $id);
+                    if (mysqli_stmt_execute($stmt)) {
+                        session_start();
+
+                        $_SESSION["loggedin"] = true;
+                        $_SESSION["id"] = $id;
+                        $_SESSION["username"] = $username;
+                        $_SESSION["user_string"] = $param_user_string;
+                        header("location: login.php");
+                    }else{
+                        echo "Something went wrong. Please try again later.";
+                    }
+                }else{
+                    echo "Something went wrong. Please try again later.";
+                }
             } else {
-                echo "Oops! Something went wrong. Please try again later.";
+                echo "Something went wrong. Please try again later.";
             }
 
             // Close statement
@@ -95,7 +109,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Sign Up | Shareboard</title>
-    <link rel="stylesheet" href="../css/style.css?v=1.21312321">
+    <link rel="stylesheet" href="../css/auth.css">
 </head>
 <body>
 <div class="hd"></div>
