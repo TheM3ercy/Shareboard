@@ -22,3 +22,4 @@ Woche 16.06 - 23.06
  - Website & API fertiggestellt
  - Android App automatische synchronisation implementiert, Notifications, Recycling bin implementiert,
    Design und Usability Verbesserungen
+ - Bugfixes, Improvemnts in Deleting & Syncing in Windows app
