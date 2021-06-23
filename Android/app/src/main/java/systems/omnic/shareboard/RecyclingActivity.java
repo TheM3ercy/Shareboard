@@ -98,7 +98,7 @@ public class RecyclingActivity extends AppCompatActivity {
                         .addSwipeRightBackgroundColor(getResources().getColor(R.color.red))
                         .addSwipeLeftBackgroundColor(getResources().getColor(R.color.green))
                         .addSwipeRightActionIcon(R.drawable.ic_delete_forever)
-                        .addSwipeLeftActionIcon(R.drawable.ic_delete_bin)
+                        .addSwipeLeftActionIcon(R.drawable.ic_restore)
                         .create().decorate();
 
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
