@@ -140,10 +140,12 @@ namespace Windows_Shareboard_App
 
 			}
 			if(clipview.SelectedItems.Count!=0)
-			if (!clipitems[clipview.SelectedIndices[0]].Text.Equals("")) {
+			if (!clipitems[clipview.SelectedIndices[0]].Text.Equals("")&&!clipitems[clipview.SelectedIndices[0]].Text.Equals(last_clipboard)) {
 					try
 					{
+						last_clipboard = Clipboard.GetText();
 						Clipboard.SetText(clipitems[clipview.SelectedIndices[0]].Text);
+						
 					}
 					catch (Exception) { 
 					}
