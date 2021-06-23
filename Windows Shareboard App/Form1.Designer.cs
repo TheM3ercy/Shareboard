@@ -29,6 +29,7 @@ namespace Windows_Shareboard_App
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.label1 = new System.Windows.Forms.Label();
 			this.clipview = new System.Windows.Forms.ListView();
 			this.Text = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -57,9 +58,9 @@ namespace Windows_Shareboard_App
             this.Time});
 			this.clipview.FullRowSelect = true;
 			this.clipview.HideSelection = false;
-			this.clipview.Location = new System.Drawing.Point(340, 12);
+			this.clipview.Location = new System.Drawing.Point(215, 9);
 			this.clipview.Name = "clipview";
-			this.clipview.Size = new System.Drawing.Size(448, 426);
+			this.clipview.Size = new System.Drawing.Size(573, 426);
 			this.clipview.TabIndex = 1;
 			this.clipview.UseCompatibleStateImageBehavior = false;
 			this.clipview.View = System.Windows.Forms.View.Details;
@@ -67,7 +68,7 @@ namespace Windows_Shareboard_App
 			// 
 			// Text
 			// 
-			this.Text.Text = "Clipboard Item";
+			this.Text.Text = "Shareboard Client";
 			this.Text.Width = 350;
 			// 
 			// Time
@@ -87,7 +88,7 @@ namespace Windows_Shareboard_App
 			// 
 			// clearbtn
 			// 
-			this.clearbtn.Location = new System.Drawing.Point(259, 414);
+			this.clearbtn.Location = new System.Drawing.Point(134, 411);
 			this.clearbtn.Name = "clearbtn";
 			this.clearbtn.Size = new System.Drawing.Size(75, 23);
 			this.clearbtn.TabIndex = 3;
@@ -97,7 +98,7 @@ namespace Windows_Shareboard_App
 			// 
 			// add
 			// 
-			this.add.Location = new System.Drawing.Point(259, 385);
+			this.add.Location = new System.Drawing.Point(134, 382);
 			this.add.Name = "add";
 			this.add.Size = new System.Drawing.Size(75, 23);
 			this.add.TabIndex = 4;
@@ -107,7 +108,7 @@ namespace Windows_Shareboard_App
 			// 
 			// button1
 			// 
-			this.button1.Location = new System.Drawing.Point(259, 356);
+			this.button1.Location = new System.Drawing.Point(134, 353);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(75, 23);
 			this.button1.TabIndex = 5;
@@ -126,6 +127,7 @@ namespace Windows_Shareboard_App
 			this.Controls.Add(this.exitbtn);
 			this.Controls.Add(this.clipview);
 			this.Controls.Add(this.label1);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "Form1";
 			this.ResumeLayout(false);
 			this.PerformLayout();
