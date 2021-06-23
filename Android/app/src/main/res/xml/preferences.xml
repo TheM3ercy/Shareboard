@@ -9,4 +9,8 @@
         android:defaultValue="false"
         android:key="checkbox_notifications"
         android:title="Enable notifications" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="checkbox_autosync"
+        android:title="Auto Synchronization" />
 </PreferenceScreen>

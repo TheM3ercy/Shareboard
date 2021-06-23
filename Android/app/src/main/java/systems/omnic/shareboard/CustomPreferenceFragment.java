@@ -2,6 +2,7 @@ package systems.omnic.shareboard;
 
 import android.os.Bundle;
 
+import androidx.preference.CheckBoxPreference;
 import androidx.preference.PreferenceFragmentCompat;
 
 public class CustomPreferenceFragment extends PreferenceFragmentCompat {

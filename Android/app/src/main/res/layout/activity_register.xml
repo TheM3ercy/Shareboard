@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        app:srcCompat="@drawable/ic_launcher_background" />
+        app:srcCompat="@drawable/icon_shareboard" />
 
     <TextView
         android:id="@+id/regViewErrMsg"
@@ -22,47 +22,73 @@
         android:gravity="center_horizontal"
         android:textColor="#FF0000" />
 
-    <EditText
-        android:id="@+id/regEditUsername"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_margin="5dp"
-        android:ems="10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:hint="@string/username_register"
-        android:inputType="textPersonName" />
+        app:endIconMode="clear_text">
 
-    <EditText
-        android:id="@+id/regEditEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/regEditUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginBottom="5dp"
-        android:ems="10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:hint="@string/email"
-        android:inputType="textPersonName" />
+        app:endIconMode="clear_text">
 
-    <EditText
-        android:id="@+id/regEditPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/regEditEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginBottom="5dp"
-        android:ems="10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:hint="@string/password"
-        android:inputType="textPersonName" />
+        app:endIconMode="clear_text">
 
-    <EditText
-        android:id="@+id/regEditPassword2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/regEditPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:ems="10"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginBottom="5dp"
-        android:ems="10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:hint="@string/conf_password"
-        android:inputType="textPersonName" />
+        app:endIconMode="clear_text">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/regEditPassword2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:ems="10"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <CheckBox
         android:id="@+id/regAgreeCheckbox"

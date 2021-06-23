@@ -11,18 +11,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ListView
-            android:id="@+id/mainListView"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/mainRecView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"  />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/main_add_fab"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_gravity="end|bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
             android:layout_margin="20dp"
-            android:contentDescription="@string/fab" />
+            android:contentDescription="@string/fab"
+            app:maxImageSize="40dp"
+            android:src="@drawable/ic_add"
+            app:fabCustomSize="80dp"
+            app:tint="@color/white"
+            android:backgroundTint="@color/purple_500"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.navigation.NavigationView
@@ -41,14 +46,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp" />
-
-            <Button
-                android:id="@+id/main_navview_logout_btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:text="@string/logout"
-                android:contentDescription="Logout Button"/>
 
         </LinearLayout>
 
@@ -78,9 +75,21 @@
                 android:drawableLeft="@drawable/ic_delete_bin"
                 android:gravity="start"
                 android:padding="15dp"
-                android:text="@string/recyclebin"
+                android:text="@string/recyclingbin"
                 android:textColor="@color/black"
                 android:contentDescription="Recyclebin Button"/>
+
+            <Button
+                android:id="@+id/main_navview_logout_btn"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:drawableLeft="@drawable/ic_logout"
+                android:gravity="start"
+                android:padding="15dp"
+                android:contentDescription="Logout Button"
+                android:text="@string/logout"
+                android:textColor="@color/red"/>
         </LinearLayout>
     </com.google.android.material.navigation.NavigationView>
 
