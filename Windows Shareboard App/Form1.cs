@@ -192,7 +192,8 @@ namespace Windows_Shareboard_App
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-
+			clipview.Items.Clear();
+			clipitems.Clear();
 			pull_from_server_Method();
 
 		}
