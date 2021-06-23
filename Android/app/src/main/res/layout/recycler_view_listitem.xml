@@ -9,7 +9,7 @@
 
     <TextView
         android:id="@+id/viewContent"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center_vertical"
@@ -19,9 +19,9 @@
 
     <ImageView
         android:id="@+id/imgViewIcon"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.1"
+        android:layout_weight="10"
         android:src="@drawable/ic_synced"
         android:visibility="invisible"
         app:srcCompat="@drawable/ic_synced" />

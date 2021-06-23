@@ -19,6 +19,7 @@ public class CustomPreferenceActivity extends AppCompatActivity {
         .commit();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Settings");
     }
 
     @Override

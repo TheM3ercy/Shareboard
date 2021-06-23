@@ -17,6 +17,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     private ArrayList<Note> deleted = new ArrayList<>();
     private static TextView viewUsername;
     private Thread syncThread;
+    private Snackbar snackbar = null;
 
     private SharedPreferences prefs;
     private SharedPreferences.OnSharedPreferenceChangeListener preferencesChangeListener;
@@ -165,9 +167,10 @@ public class MainActivity extends AppCompatActivity implements Serializable {
 
 
 
-    public void init(){
+    public void init(Context context){
         viewUsername.setText(DataContainer.getInstance().getUsername());
         if (DataContainer.getInstance().isAutoSync()) startAutoSyncTask();
+        loadRecBin(context);
     }
 
 
@@ -206,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                         note.setDateTime(LocalDateTime.now());
                         deleted.add(note);
                         adapter.notifyItemRemoved(pos);
-                        Snackbar.make(recyclerView, note.getContent(), Snackbar.LENGTH_LONG)
+                        snackbar = Snackbar.make(recyclerView, note.getContent(), Snackbar.LENGTH_LONG)
                                 .setAction("Undo", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -221,7 +224,8 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                                         DeleteContentTask task = new DeleteContentTask();
                                         task.execute("" + note.getId());
                                     }
-                                }).show();
+                                }).setDuration(80000);
+                        snackbar.show();
                         break;
                     }
                     case ItemTouchHelper.LEFT:{
@@ -244,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                 new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
                         .addSwipeRightBackgroundColor(getResources().getColor(R.color.red))
                         .addSwipeLeftBackgroundColor(getResources().getColor(R.color.green))
-                        .addSwipeRightActionIcon(R.drawable.ic_delete_bin)
+                        .addSwipeRightActionIcon(R.drawable.ic_delete_white)
                         .addSwipeLeftActionIcon(R.drawable.ic_upload)
                         .create().decorate();
 
@@ -301,17 +305,18 @@ public class MainActivity extends AppCompatActivity implements Serializable {
 
     }
 
-    private void loadRecBin(){
+    private void loadRecBin(Context context){
         Log.d(TAG, "loadRecBin: Method entered");
 
-        File recBin = new File(new File(MainActivity.this.getFilesDir(), "data"), "recbin" + DataContainer.getInstance().getUsername() + ".txt");
+        File dir = new File(context.getFilesDir(), "data");
+        File recBin = new File(dir, "recbin" + DataContainer.getInstance().getUsername() + ".txt");
         if (!recBin.exists()) return;
         try (BufferedReader br = new BufferedReader(new FileReader(recBin))){
             List<Note> recBinList = new ArrayList<>();
             String line = br.readLine();
             if (line == null) return;
             for (String s:line.split(";")){
-                Note note = new Note(s.split("&")[0], false, Integer.parseInt(s.split("&")[1]));
+                Note note = new Note(s.split("&")[0], false, Integer.parseInt(s.split("&")[2]));
                 note.setDateTime(LocalDateTime.from(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss").parse(s.split("&")[1])));
                 recBinList.add(note);
             }
@@ -327,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         File file = new File(directory, "recbin" + DataContainer.getInstance().getUsername() + ".txt");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))){
             for (Note n:DataContainer.getInstance().getRecyclingBin())
-                bw.write(n.getContent() + "&" + n.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")) + "&" + n.getId());
+                bw.write(n.getContent() + "&" + n.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")) + "&" + n.getId() + ";");
             bw.flush();
         } catch (Exception e){
         }
@@ -399,7 +404,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
 
         if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
             viewUsername.setText(DataContainer.getInstance().getUsername());
-            loadRecBin();
+            loadRecBin(MainActivity.this);
             return true;
         }else if (item.getItemId() == R.id.mainSync){
             Log.d(TAG, "onOptionsItemSelected: Load selected");
@@ -432,16 +437,22 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     private void preferenceChanged(SharedPreferences sharedPrefs, String key){
         Log.d(TAG, "preferenceChanged: Method entered");
 
-        boolean autoSync = sharedPrefs.getBoolean("checkbox_autosync", false);
-        DataContainer.getInstance().setAutoSync(autoSync);
-        if (autoSync) startAutoSyncTask();
-        else try {
-            Log.d(TAG, "preferenceChanged: disabled thread");
-            syncThread.interrupt();
-        } catch (Exception e){
-            e.printStackTrace();
+        if (key.equals("checkbox_autosync")) {
+            boolean autoSync = sharedPrefs.getBoolean("checkbox_autosync", false);
+            DataContainer.getInstance().setAutoSync(autoSync);
+            if (autoSync) startAutoSyncTask();
+            else try {
+                Log.d(TAG, "preferenceChanged: disabled thread");
+                syncThread.interrupt();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Log.d(TAG, "preferenceChanged: changed autosync Value:" + autoSync);
+        } else {
+            boolean showNotifications = sharedPrefs.getBoolean("switch_notifications", false);
+            DataContainer.getInstance().setShowNotifications(showNotifications);
+            Log.d(TAG, "preferenceChanged: changed notification Value:" + showNotifications);
         }
-        Log.d(TAG, "preferenceChanged: changed Value:" + autoSync);
     }
 
     private void loadContent(List<Note> cont){
@@ -449,7 +460,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
 
         List<String> notifications = new ArrayList<>();
         for (Note n:cont) if (n.getContent().contains("NOTIFICATION:")) notifications.add(n.getContent());
-        if (notifications.size() > 0) showNotifications(notifications);
+        if (notifications.size() > 0 && DataContainer.getInstance().isShowNotifications()) showNotifications(notifications);
 
         for (Note n:cont)
             if (n.getContent().contains("NOTIFICATION")){
@@ -605,7 +616,46 @@ public class MainActivity extends AppCompatActivity implements Serializable {
             List<Note> tmp = new ArrayList<>();
             for (String s:results)
                 tmp.add(new Note(s.split(";&;")[0], true, Integer.parseInt(s.split(";&;")[1])));
-            loadContent(tmp);
+
+            List<Note> changes = new ArrayList<>();
+            for (Note n:tmp){
+                boolean contains = false;
+                for (Note note:content){
+                    if (n.getId() == note.getId())
+                        contains = true;
+                }
+                if (!contains)
+                    changes.add(n);
+            }
+
+            List<Note> newContent = tmp;
+            newContent.removeAll(changes);
+            List<Integer> indexes = new ArrayList<>();
+            for (Note n:content) {
+                boolean contains = false;
+                if (n.isSynced()) {
+                    for (Note note:newContent) {
+                        if (n.getId() == note.getId())
+                            contains = true;
+                    }
+                    if (!contains){
+                        for (int i = 0; i < content.size(); i++) {
+                            if (content.get(i).equals(n))
+                                indexes.add(i);
+                        }
+                    }
+                }
+            }
+
+            for (int i:indexes){
+                content.remove(i);
+                adapter.notifyItemRemoved(i);
+            }
+            ItemTouchHelper helper = new ItemTouchHelper(touch);
+            helper.attachToRecyclerView(recyclerView);
+
+            if (changes.size() > 0)
+                loadContent(changes);
         }
     }
 
@@ -661,6 +711,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
 
         @Override
         protected String doInBackground(String... strings) {
+            if (snackbar != null) snackbar.dismiss();
             Log.d(TAG, "doInBackground: Method entered");
 
             String urlString = "http://omnic-systems.com/shareboard/pull_request/?user_string=" + DataContainer.getInstance().getUserString();
@@ -727,6 +778,34 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                 if (!contains)
                     changes.add(n);
             }
+
+            List<Note> newContent = tmp;
+            newContent.removeAll(changes);
+            List<Integer> indexes = new ArrayList<>();
+            for (Note n:content) {
+                boolean contains = false;
+                if (n.isSynced()) {
+                    for (Note note:newContent) {
+                        if (n.getId() == note.getId())
+                            contains = true;
+                    }
+                    if (!contains){
+                        for (int i = 0; i < content.size(); i++) {
+                            if (content.get(i).equals(n))
+                                indexes.add(i);
+                        }
+                    }
+                }
+            }
+
+            for (int i:indexes){
+
+                    content.remove(i);
+                    adapter.notifyItemRemoved(i);
+
+            }
+            ItemTouchHelper helper = new ItemTouchHelper(touch);
+            helper.attachToRecyclerView(recyclerView);
 
             if (changes.size() > 0)
                 loadContent(changes);

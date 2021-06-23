@@ -49,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         context = (MainActivity) getIntent().getExtras().getSerializable("context");
+        getSupportActionBar().setTitle("Shareborad: Login");
 
         rememberMe = findViewById(R.id.loginRemCheckbox);
         rememberMe.setActivated(DataContainer.getInstance().isStayLoggedIn());
@@ -166,7 +167,7 @@ public class LoginActivity extends AppCompatActivity {
             DataContainer.getInstance().setUsername(username);
             DataContainer.getInstance().setUserString(userString);
             DataContainer.getInstance().saveConf(LoginActivity.this);
-            context.init();
+            context.init(LoginActivity.this);
             finish();
         }
     }

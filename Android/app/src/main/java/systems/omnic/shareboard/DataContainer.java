@@ -22,6 +22,7 @@ public class DataContainer {
     private String username = "";
     private List<Note> recyclingBin = new ArrayList<>();
     private boolean autoSync = false;
+    private boolean showNotifications = true;
 
     private DataContainer(){}
 
@@ -73,6 +74,14 @@ public class DataContainer {
 
     public void setAutoSync(boolean autoSync) {
         this.autoSync = autoSync;
+    }
+
+    public boolean isShowNotifications() {
+        return showNotifications;
+    }
+
+    public void setShowNotifications(boolean showNotifications) {
+        this.showNotifications = showNotifications;
     }
 
     public void saveConf(Context context) {

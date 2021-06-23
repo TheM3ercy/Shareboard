@@ -35,6 +35,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Shareborad: Register");
 
         ImageView iconView = findViewById(R.id.regIconView);
         Button cancel = findViewById(R.id.reg_cancel_btn);
@@ -65,15 +66,20 @@ public class RegisterActivity extends AppCompatActivity {
         EditText email = findViewById(R.id.regEditEmail);
         viewErrorMessage = findViewById(R.id.regViewErrMsg);
 
+        String passwordString = password.getText().toString();
+
         String errorMessage = getResources().getString(R.string.register_error_message);
         if (username.getText().toString().equals("") || username.getText().toString().contains("[^\\w]")) {
             viewErrorMessage.setText(errorMessage);
             return;
-        }else if (password.getText().toString().equals("") || passwordConf.getText().toString().equals("") ||
-            password.getText().toString().contains("[^\\w]") || !password.getText().toString().equals(passwordConf.getText().toString())) {
+        }else if (passwordString.length() < 6) {
+            viewErrorMessage.setText("Password must contain 6 characters");
+            return;
+        }else if (passwordString.equals("") || passwordConf.getText().toString().equals("") ||
+            passwordString.contains("[^\\w]") || !passwordString.equals(passwordConf.getText().toString())) {
             viewErrorMessage.setText(errorMessage);
             return;
-        }else if (email.getText().toString().equals("") || !email.getText().toString().contains("@")) {
+        }else if (email.getText().toString().equals("") || !email.getText().toString().contains("@") || !email.getText().toString().contains(".")) {
             viewErrorMessage.setText(errorMessage);
             return;
         }
@@ -130,6 +136,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
 
             Log.d(TAG, "onPostExecute: New user created!:" + string);
+            finish();
         }
     }
 }
