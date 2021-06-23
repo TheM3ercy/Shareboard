@@ -54,8 +54,8 @@ namespace Windows_Shareboard_App
 			// clipview
 			// 
 			this.clipview.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Text,
-            this.Time});
+			this.Text,
+			this.Time});
 			this.clipview.FullRowSelect = true;
 			this.clipview.HideSelection = false;
 			this.clipview.Location = new System.Drawing.Point(215, 9);
