@@ -44,6 +44,16 @@ namespace Windows_Shareboard_App
 				return obj is Clipboard_Item item &&
 					   id == item.id;
 			}
+
+			public override int GetHashCode()
+			{
+				return base.GetHashCode();
+			}
+
+			public override string ToString()
+			{
+				return base.ToString();
+			}
 		}
 		
 		private void pull_from_server_Method()
@@ -123,6 +133,7 @@ namespace Windows_Shareboard_App
 			var response = client.GetAsync("?user_string=" + userkey + "&content=" + Clipboard.GetText());
 			last_clipboard = Clipboard.GetText();
 			pull_from_server_Method();
+			clipview.SelectedItems.Clear();
 
 
 		}
@@ -137,9 +148,9 @@ namespace Windows_Shareboard_App
 				var response = client.GetAsync("?user_string=" + userkey + "&content=" + Clipboard.GetText());
 				last_clipboard = Clipboard.GetText();
 				pull_from_server_Method();
-
+				clipview.SelectedItems.Clear();
 			}
-			if(clipview.SelectedItems.Count!=0)
+			if(clipview.SelectedItems.Count==1)
 			if (!clipitems[clipview.SelectedIndices[0]].Text.Equals("")&&!clipitems[clipview.SelectedIndices[0]].Text.Equals(last_clipboard)) {
 					try
 					{
@@ -208,7 +219,7 @@ namespace Windows_Shareboard_App
 			{
 				while (running)
 				{
-					control.Invoke(control.set_Clipboard);
+					try { control.Invoke(control.set_Clipboard); } catch (Exception) { }
 					Thread.Sleep(250);
 				}
 

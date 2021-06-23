@@ -74,7 +74,7 @@ namespace Windows_Shareboard_App
 			// Time
 			// 
 			this.Time.Text = "Time";
-			this.Time.Width = 100;
+			this.Time.Width = 200;
 			// 
 			// exitbtn
 			// 
