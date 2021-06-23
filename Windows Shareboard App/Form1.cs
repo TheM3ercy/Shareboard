@@ -253,7 +253,14 @@ namespace Windows_Shareboard_App
 				Thread.Sleep(100);
 				while (running)
 				{
-					myFormControl1.Invoke(myFormControl1.pull_From_Server);
+					try
+					{
+						myFormControl1.Invoke(myFormControl1.pull_From_Server);
+					}
+					catch (Exception)
+					{
+
+					}
 					Thread.Sleep(3000);
 				}
 			}
